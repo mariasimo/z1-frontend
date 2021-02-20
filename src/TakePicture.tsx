@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Redirect } from "wouter";
 
 const TakePicture = ({
   picture,
@@ -118,9 +119,30 @@ const TakePicture = ({
             <p>{outcome}</p>
           </>
         )}
+        {outcome === "Approved" && <BackToHome />}
       </div>
       <button>Cancel</button>
     </div>
+  );
+};
+
+const BackToHome = () => {
+  const [count, setCount] = useState<number>(5);
+  useEffect(() => {
+    if (count !== 0) {
+      const time = 1000;
+      const timer = setTimeout(() => setCount(count - 1), time);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [count]);
+
+  return count === 0 ? (
+    <Redirect to="/" />
+  ) : (
+    <p>Please wait while we redirect you {count}</p>
   );
 };
 
