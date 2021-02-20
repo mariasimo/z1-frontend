@@ -1,18 +1,24 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 
 const TakePicture = () => {
+  const videoRef = useRef<HTMLMediaElement>(null);
   const manageCamera = useCallback(() => {
     const constrains: {
       video: boolean | MediaTrackConstraints | undefined;
+      audio: boolean | MediaTrackConstraints | undefined;
     } = {
       video: true,
+      audio: false,
     };
 
     const successCallback: (
-      localMediaStream: MediaStream | undefined
-    ) => void = function (localMediaStream) {
-      console.log("call sucess", localMediaStream);
-      submitImage(localMediaStream);
+      stream: MediaStream | Blob | MediaSource | null
+    ) => void = function (stream) {
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+      //   submitImage(localMediaStream);
     };
     const errorCallback: (err: MediaStreamError) => void = function (err) {
       console.log(err);
@@ -37,7 +43,16 @@ const TakePicture = () => {
     manageCamera();
   }, [manageCamera]);
 
-  return <div className="App">Smile!</div>;
+  return (
+    <div className="App">
+      Smile!
+      <div className="camera">
+        <video ref={videoRef} width="400">
+          Video stream not available.
+        </video>
+      </div>
+    </div>
+  );
 };
 
 export default TakePicture;
