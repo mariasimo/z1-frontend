@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Redirect } from "wouter";
+import { Redirect, Link } from "wouter";
+import useCountDown from "./hooks/useCountDown";
 
 const TakePicture = ({
   picture,
@@ -67,7 +68,7 @@ const TakePicture = ({
         videoRef.current.play();
 
         videoRef.current.addEventListener("canplay", () => {
-          takeImage();
+          setTimeout(() => takeImage(), 500);
         });
       }
     };
@@ -124,25 +125,15 @@ const TakePicture = ({
         )}
         {outcome === "Approved" && <BackToHome />}
       </div>
-      <button>Cancel</button>
+      <Link to="/">Cancel</Link>
     </div>
   );
 };
 
 const BackToHome = () => {
-  const [count, setCount] = useState<number>(5);
-  useEffect(() => {
-    if (count !== 0) {
-      const time = 1000;
-      const timer = setTimeout(() => setCount(count - 1), time);
+  const [count, ready] = useCountDown(5);
 
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, [count]);
-
-  return count === 0 ? (
+  return ready ? (
     <Redirect to="/" />
   ) : (
     <p>Please wait while we redirect you {count}</p>
