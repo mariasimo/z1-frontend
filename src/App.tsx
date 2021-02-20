@@ -10,13 +10,6 @@ const App = () => {
 
   return (
     <body>
-      <Header>
-        <Container>
-          <Logo>
-            <Link to="/">BankClient</Link>
-          </Logo>
-        </Container>
-      </Header>
       <Route path="/take-picture">
         <Camera
           picture={picture}
