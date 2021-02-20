@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, Route } from "wouter";
 import Home from "./Home";
-import { Header, Logo, MainContainer } from "./styles/components";
+import { Header, Logo, Container } from "./styles/components";
 import TakePicture from "./TakePicture";
 
 const App = () => {
@@ -11,11 +11,11 @@ const App = () => {
   return (
     <body>
       <Header>
-        <MainContainer>
+        <Container>
           <Logo>
             <Link to="/">BankClient</Link>
           </Logo>
-        </MainContainer>
+        </Container>
       </Header>
       <Route path="/take-picture">
         <TakePicture
