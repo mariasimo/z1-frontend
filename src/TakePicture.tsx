@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Redirect, Link } from "wouter";
+import { Link } from "wouter";
+import BackToHome from "./BackToHome";
 import useCountDown from "./hooks/useCountDown";
 
 const TakePicture = ({
@@ -17,6 +18,7 @@ const TakePicture = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [count, ready] = useCountDown(5);
   const endpoint = "https://front-exercise.z1.digital/evaluations";
 
   const submitImage: (img: string | undefined) => void = useCallback(
@@ -68,7 +70,11 @@ const TakePicture = ({
         videoRef.current.play();
 
         videoRef.current.addEventListener("canplay", () => {
-          setTimeout(() => takeImage(), 500);
+          if (ready) {
+            console.log("hey");
+            setLoading(true);
+            takeImage();
+          }
         });
       }
     };
@@ -79,16 +85,15 @@ const TakePicture = ({
       .getUserMedia(constrains)
       .then(successCallback)
       .catch(errorCallback);
-  }, [takeImage]);
+  }, [takeImage, ready]);
 
   useEffect(() => {
     manageCamera();
   }, [manageCamera]);
 
   useEffect(() => {
-    setLoading(true);
     setPicture(undefined);
-  }, [setPicture, setLoading]);
+  }, [setPicture]);
 
   return (
     <div className="take-picture">
@@ -102,6 +107,7 @@ const TakePicture = ({
           Video stream not available.
         </video>
       </div>
+      {!ready && <p>time for cancel... {count}</p>}
       {loading && <p>Loading...</p>}
       <div className="output">
         <canvas
@@ -127,16 +133,6 @@ const TakePicture = ({
       </div>
       <Link to="/">Cancel</Link>
     </div>
-  );
-};
-
-const BackToHome = () => {
-  const [count, ready] = useCountDown(5);
-
-  return ready ? (
-    <Redirect to="/" />
-  ) : (
-    <p>Please wait while we redirect you {count}</p>
   );
 };
 
