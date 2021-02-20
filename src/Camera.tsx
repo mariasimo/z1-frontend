@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import BackToHome from "./BackToHome";
 import useCountDown from "./hooks/useCountDown";
+import useWindowSize from "./hooks/useWindowSize";
+import { VideoContainer } from "./styles/components";
 
 const Camera = ({
   picture,
@@ -17,20 +19,22 @@ const Camera = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const {
+    width: windowWidth,
+    height: windowHeight,
+    dpi: windowDpi,
+  } = useWindowSize();
 
   const [newRequest, setNewRequest] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [timeToCancel, readyToTakeImg] = useCountDown(1);
   const [cancel, setCancel] = useState(false);
   const controller = new AbortController();
-
   const [, setLocation] = useLocation();
-
   const endpoint = "https://front-exercise.z1.digital/evaluations";
 
   const submitImage: (img: string | undefined) => void = useCallback(
     (img) => {
-      console.log(controller.signal);
       return fetch(endpoint, {
         signal: controller.signal,
         method: "POST",
@@ -65,11 +69,9 @@ const Camera = ({
 
   const manageCamera = useCallback(() => {
     const constrains: {
-      video: boolean | MediaTrackConstraints | undefined;
-      audio: boolean | MediaTrackConstraints | undefined;
+      video: boolean;
     } = {
       video: true,
-      audio: false,
     };
 
     navigator.mediaDevices
@@ -77,9 +79,7 @@ const Camera = ({
       .then(successCallback)
       .catch(errorCallback);
 
-    function successCallback(
-      stream: MediaStream | Blob | MediaSource | null
-    ): void {
+    function successCallback(stream: MediaStream | null): void {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
@@ -109,19 +109,21 @@ const Camera = ({
 
   return (
     <div className="take-picture">
-      <div className="camera">
+      <VideoContainer>
         <video
           ref={videoRef}
-          style={{ backgroundColor: "grey" }}
-          width="284.4"
-          height="160"
+          style={{
+            backgroundColor: "grey",
+          }}
+          width={windowWidth}
+          height={windowHeight}
         >
           Video stream not available.
         </video>
-      </div>
+      </VideoContainer>
       {!readyToTakeImg && <p>time for cancel... {timeToCancel}</p>}
       {loading && <p>Loading...</p>}
-      <div className="output">
+      <div className="output" style={{ position: "absolute" }}>
         <canvas
           ref={canvasRef}
           width="284.4"

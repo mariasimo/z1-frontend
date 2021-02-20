@@ -106,3 +106,16 @@ export const OutcomeTag = styled.div`
   text-transform: uppercase;
   transform: translateY(50%);
 `;
+
+export const VideoContainer = styled.div`
+  box-sizing: border-box;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  object-fit: cover;
+
+  video {
+    height: 100%;
+    object-fit: cover;
+  }
+`;
