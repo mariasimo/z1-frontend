@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import BackToHome from "./BackToHome";
 import useCountDown from "./hooks/useCountDown";
 
@@ -14,16 +14,23 @@ const TakePicture = ({
   outcome: string | undefined;
   setOutcome: any;
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const [newRequest, setNewRequest] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [count, ready] = useCountDown(5);
+  const [timeToCancel, readyToTakeImg] = useCountDown(1);
+  const [cancel, setCancel] = useState(false);
   const endpoint = "https://front-exercise.z1.digital/evaluations";
+  const controller = new AbortController();
+  const [, setLocation] = useLocation();
 
   const submitImage: (img: string | undefined) => void = useCallback(
     (img) => {
+      console.log(controller.signal);
       return fetch(endpoint, {
+        signal: controller.signal,
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -34,7 +41,8 @@ const TakePicture = ({
         .then((response) => response.json())
         .then(({ summary: { outcome } }) => {
           setPicture(img);
-          setOutcome(outcome);
+          setOutcome("Approved");
+          setNewRequest(true);
         })
         .catch((err) => console.log({ err }))
         .finally(() => setLoading(false));
@@ -70,8 +78,7 @@ const TakePicture = ({
         videoRef.current.play();
 
         videoRef.current.addEventListener("canplay", () => {
-          if (ready) {
-            console.log("hey");
+          if (readyToTakeImg && !cancel) {
             setLoading(true);
             takeImage();
           }
@@ -85,15 +92,17 @@ const TakePicture = ({
       .getUserMedia(constrains)
       .then(successCallback)
       .catch(errorCallback);
-  }, [takeImage, ready]);
+  }, [readyToTakeImg, takeImage, cancel, videoRef]);
+
+  const handleCancel = () => {
+    controller.abort();
+    setCancel(controller.signal.aborted);
+    setLocation("/");
+  };
 
   useEffect(() => {
     manageCamera();
   }, [manageCamera]);
-
-  useEffect(() => {
-    setPicture(undefined);
-  }, [setPicture]);
 
   return (
     <div className="take-picture">
@@ -107,7 +116,7 @@ const TakePicture = ({
           Video stream not available.
         </video>
       </div>
-      {!ready && <p>time for cancel... {count}</p>}
+      {!readyToTakeImg && <p>time for cancel... {timeToCancel}</p>}
       {loading && <p>Loading...</p>}
       <div className="output">
         <canvas
@@ -117,21 +126,25 @@ const TakePicture = ({
           style={{ display: "none" }}
         ></canvas>
 
-        {outcome && picture && (
-          <>
-            <img
-              ref={imgRef}
-              src={picture}
-              alt="output"
-              width="400"
-              height="225"
-            />
-            <p>{outcome}</p>
-          </>
+        {newRequest && (
+          <div>
+            {outcome && picture && (
+              <>
+                <img
+                  ref={imgRef}
+                  src={picture}
+                  alt="output"
+                  width="400"
+                  height="225"
+                />
+                <p>{outcome}</p>
+              </>
+            )}
+            {outcome === "Approved" && <BackToHome />}
+          </div>
         )}
-        {outcome === "Approved" && <BackToHome />}
       </div>
-      <Link to="/">Cancel</Link>
+      <button onClick={handleCancel}>Cancel</button>
     </div>
   );
 };

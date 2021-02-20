@@ -3,7 +3,7 @@ import { Redirect } from "wouter";
 import useCountDown from "./hooks/useCountDown";
 
 const BackToHome = () => {
-  const [count, ready] = useCountDown(5);
+  const [count, ready] = useCountDown(1);
 
   return ready ? (
     <Redirect to="/" />
