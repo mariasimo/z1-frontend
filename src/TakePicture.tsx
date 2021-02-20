@@ -4,14 +4,17 @@ import { Redirect } from "wouter";
 const TakePicture = ({
   picture,
   setPicture,
+  outcome,
+  setOutcome,
 }: {
   picture: string | undefined;
   setPicture: any;
+  outcome: string | undefined;
+  setOutcome: any;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
-  const [outcome, setOutcome] = useState<string | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
   const endpoint = "https://front-exercise.z1.digital/evaluations";
 
