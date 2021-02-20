@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, Route } from "wouter";
-import Home from "./Home";
 import { Header, Logo, Container } from "./styles/components";
-import TakePicture from "./TakePicture";
+import Scan from "./Scan";
+import Camera from "./Camera";
 
 const App = () => {
   const [picture, setPicture] = useState<string | undefined>();
@@ -18,7 +18,7 @@ const App = () => {
         </Container>
       </Header>
       <Route path="/take-picture">
-        <TakePicture
+        <Camera
           picture={picture}
           setPicture={setPicture}
           outcome={outcome}
@@ -26,7 +26,7 @@ const App = () => {
         />
       </Route>
       <Route path="/">
-        <Home picture={picture} outcome={outcome} />
+        <Scan picture={picture} outcome={outcome} />
       </Route>
     </body>
   );

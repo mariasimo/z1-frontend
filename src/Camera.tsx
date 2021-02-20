@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import BackToHome from "./BackToHome";
 import useCountDown from "./hooks/useCountDown";
 
-const TakePicture = ({
+const Camera = ({
   picture,
   setPicture,
   outcome,
@@ -152,4 +152,4 @@ const TakePicture = ({
   );
 };
 
-export default TakePicture;
+export default Camera;

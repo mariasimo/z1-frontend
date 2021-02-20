@@ -2,7 +2,7 @@ import React from "react";
 import CardFrame from "./CardFrame";
 import { Container, Paragraph, Title } from "./styles/components";
 
-const Home = ({
+const Scan = ({
   picture,
   outcome,
 }: {
@@ -21,4 +21,4 @@ const Home = ({
   </main>
 );
 
-export default Home;
+export default Scan;
