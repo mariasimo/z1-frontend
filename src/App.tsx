@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, Route } from "wouter";
+import Home from "./Home";
+import { Header, Logo, MainContainer } from "./styles/components";
 import TakePicture from "./TakePicture";
 
 const App = () => {
@@ -8,7 +10,13 @@ const App = () => {
 
   return (
     <body>
-      <Link to="/">BankClient</Link>
+      <Header>
+        <MainContainer>
+          <Logo>
+            <Link to="/">BankClient</Link>
+          </Logo>
+        </MainContainer>
+      </Header>
       <Route path="/take-picture">
         <TakePicture
           picture={picture}
@@ -23,27 +31,5 @@ const App = () => {
     </body>
   );
 };
-
-const Home = ({
-  picture,
-  outcome,
-}: {
-  picture: string | undefined;
-  outcome: string | undefined;
-}) => (
-  <main>
-    <h1>Scan your id</h1>
-    <p>
-      Take a picture. It may take time to validate your personal information.
-    </p>
-    {outcome && picture && (
-      <>
-        <img src={picture} alt="output" width="400" height="225" />
-        <p>{outcome}</p>
-      </>
-    )}
-    <Link to="/take-picture">Take Picture</Link>
-  </main>
-);
 
 export default App;

@@ -22,9 +22,11 @@ const TakePicture = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [timeToCancel, readyToTakeImg] = useCountDown(1);
   const [cancel, setCancel] = useState(false);
-  const endpoint = "https://front-exercise.z1.digital/evaluations";
   const controller = new AbortController();
+
   const [, setLocation] = useLocation();
+
+  const endpoint = "https://front-exercise.z1.digital/evaluations";
 
   const submitImage: (img: string | undefined) => void = useCallback(
     (img) => {
@@ -70,9 +72,14 @@ const TakePicture = ({
       audio: false,
     };
 
-    const successCallback: (
+    navigator.mediaDevices
+      .getUserMedia(constrains)
+      .then(successCallback)
+      .catch(errorCallback);
+
+    function successCallback(
       stream: MediaStream | Blob | MediaSource | null
-    ) => void = function (stream) {
+    ): void {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
@@ -84,21 +91,17 @@ const TakePicture = ({
           }
         });
       }
-    };
-    const errorCallback: (err: MediaStreamError) => void = function (err) {
+    }
+    function errorCallback(err: MediaStreamError): void {
       console.log({ err });
-    };
-    navigator.mediaDevices
-      .getUserMedia(constrains)
-      .then(successCallback)
-      .catch(errorCallback);
+    }
   }, [readyToTakeImg, takeImage, cancel, videoRef]);
 
-  const handleCancel = () => {
+  function handleCancel() {
     controller.abort();
     setCancel(controller.signal.aborted);
     setLocation("/");
-  };
+  }
 
   useEffect(() => {
     manageCamera();
