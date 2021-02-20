@@ -11,6 +11,40 @@ const TakePicture = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const [outcome, setOutcome] = useState<string | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const endpoint = "https://front-exercise.z1.digital/evaluations";
+
+  const submitImage: (img: string | undefined) => void = useCallback(
+    (img) => {
+      return fetch(endpoint, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ img: "" }),
+      })
+        .then((response) => response.json())
+        .then(({ summary: { outcome } }) => {
+          setPicture(img);
+          setOutcome(outcome);
+        })
+        .catch((err) => console.log({ err }))
+        .finally(() => setLoading(false));
+    },
+    [setPicture, setOutcome]
+  );
+
+  const takeImage = useCallback(() => {
+    if (canvasRef.current) {
+      var context = canvasRef.current.getContext("2d");
+      if (context && videoRef.current) {
+        context.drawImage(videoRef.current, 0, 0, 400, 225);
+        const img = canvasRef.current.toDataURL("image/png");
+        submitImage(img);
+      }
+    }
+  }, [submitImage]);
 
   const manageCamera = useCallback(() => {
     const constrains: {
@@ -27,55 +61,43 @@ const TakePicture = ({
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
-        setTimeout(() => takeImage(stream), 5000);
+
+        videoRef.current.addEventListener("canplay", () => {
+          takeImage();
+        });
       }
     };
     const errorCallback: (err: MediaStreamError) => void = function (err) {
-      console.log(err);
+      console.log({ err });
     };
-    navigator.getUserMedia(constrains, successCallback, errorCallback);
-  }, []);
-
-  const takeImage: (video: any) => void = (video) => {
-    if (canvasRef.current) {
-      var context = canvasRef.current.getContext("2d");
-      if (context && videoRef.current) {
-        context.drawImage(videoRef.current, 0, 0, 400, 225);
-        const img = canvasRef.current.toDataURL("image/png");
-        submitImage(img);
-      }
-    }
-  };
-
-  const submitImage: (img: string | undefined) => void = (img) => {
-    return fetch("https://front-exercise.z1.digital/evaluations", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ img: "" }),
-    })
-      .then((result) => result.json())
-      .then(({ summary: { outcome } }) => {
-        setPicture(img);
-        setOutcome(outcome);
-      })
-      .catch((err) => console.log({ err }));
-  };
+    navigator.mediaDevices
+      .getUserMedia(constrains)
+      .then(successCallback)
+      .catch(errorCallback);
+  }, [takeImage]);
 
   useEffect(() => {
     manageCamera();
   }, [manageCamera]);
 
+  useEffect(() => {
+    setLoading(true);
+    setPicture(undefined);
+  }, [setPicture, setLoading]);
+
   return (
     <div className="take-picture">
-      Smile!
       <div className="camera">
-        <video ref={videoRef} width="400">
+        <video
+          ref={videoRef}
+          style={{ backgroundColor: "grey" }}
+          width="400"
+          height="225"
+        >
           Video stream not available.
         </video>
       </div>
+      {loading && <p>Loading...</p>}
       <div className="output">
         <canvas
           ref={canvasRef}
@@ -83,7 +105,8 @@ const TakePicture = ({
           height="225"
           style={{ display: "none" }}
         ></canvas>
-        {outcome && (
+
+        {outcome && picture && (
           <>
             <img
               ref={imgRef}
