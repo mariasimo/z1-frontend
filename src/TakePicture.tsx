@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useRef } from "react";
 
 const TakePicture = () => {
-  const videoRef = useRef<HTMLMediaElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+
   const manageCamera = useCallback(() => {
     const constrains: {
       video: boolean | MediaTrackConstraints | undefined;
@@ -17,14 +20,29 @@ const TakePicture = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         videoRef.current.play();
+        setTimeout(() => takeImage(stream), 5000);
       }
-      //   submitImage(localMediaStream);
     };
     const errorCallback: (err: MediaStreamError) => void = function (err) {
       console.log(err);
     };
     navigator.getUserMedia(constrains, successCallback, errorCallback);
   }, []);
+
+  const takeImage: (video: any) => void = (video) => {
+    if (canvasRef.current) {
+      var context = canvasRef.current.getContext("2d");
+      console.log("hola", videoRef.current);
+      if (context && videoRef.current) {
+        context.drawImage(videoRef.current, 0, 0, 400, 225);
+        var data = canvasRef.current.toDataURL("image/png");
+        console.log({ data });
+        if (imgRef.current) {
+          imgRef.current.src = data;
+        }
+      }
+    }
+  };
 
   const submitImage: (img: MediaStream | undefined) => void = (img) => {
     return fetch("https://front-exercise.z1.digital/evaluations", {
@@ -50,6 +68,15 @@ const TakePicture = () => {
         <video ref={videoRef} width="400">
           Video stream not available.
         </video>
+      </div>
+      <div className="output">
+        <canvas
+          ref={canvasRef}
+          width="400"
+          height="225"
+          style={{ display: "none" }}
+        ></canvas>
+        <img ref={imgRef} alt="output" width="400" height="225" />
       </div>
     </div>
   );
