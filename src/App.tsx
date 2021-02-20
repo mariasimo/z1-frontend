@@ -1,43 +1,21 @@
-import React, { useCallback, useEffect } from "react";
+import React from "react";
+import { Link, Route } from "wouter";
+import TakePicture from "./TakePicture";
 
 const App = () => {
-  const manageCamera = useCallback(() => {
-    const constrains: {
-      video: boolean | MediaTrackConstraints | undefined;
-    } = {
-      video: true,
-    };
-
-    const successCallback: (
-      localMediaStream: MediaStream | undefined
-    ) => void = function (localMediaStream) {
-      console.log("call sucess", localMediaStream);
-      submitImage(localMediaStream);
-    };
-    const errorCallback: (err: MediaStreamError) => void = function (err) {
-      console.log(err);
-    };
-    navigator.getUserMedia(constrains, successCallback, errorCallback);
-  }, []);
-
-  const submitImage: (img: MediaStream | undefined) => void = (img) => {
-    return fetch("https://front-exercise.z1.digital/evaluations", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({}),
-    })
-      .then((result) => result.json())
-      .then((result) => console.log(result));
-  };
-
-  useEffect(() => {
-    manageCamera();
-  }, [manageCamera]);
-
-  return <div className="App">Hey girl</div>;
+  return (
+    <div>
+      <p>BankClient</p>
+      <h1>Scan your id</h1>
+      <p>
+        Take a picture. It may take time to validate your personal information.
+      </p>
+      <Link href="/take-picture">Take Picture</Link>
+      <Route path="/take-picture">
+        <TakePicture />
+      </Route>
+    </div>
+  );
 };
 
 export default App;
