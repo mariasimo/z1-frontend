@@ -1,6 +1,6 @@
 import React from "react";
-import { Link } from "wouter";
-import { Container, Title, Paragraph } from "./styles/components";
+import CardFrame from "./CardFrame";
+import { Container, Paragraph, Title } from "./styles/components";
 
 const Home = ({
   picture,
@@ -15,13 +15,8 @@ const Home = ({
       <Paragraph>
         Take a picture. It may take time to validate your personal information.
       </Paragraph>
-      {outcome && picture && (
-        <>
-          <img src={picture} alt="output" width="400" height="225" />
-          <p>{outcome}</p>
-        </>
-      )}
-      <Link to="/take-picture">Take Picture</Link>
+
+      <CardFrame picture={picture} outcome={outcome} />
     </Container>
   </main>
 );

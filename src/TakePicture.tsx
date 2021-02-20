@@ -43,7 +43,7 @@ const TakePicture = ({
         .then((response) => response.json())
         .then(({ summary: { outcome } }) => {
           setPicture(img);
-          setOutcome("Approved");
+          setOutcome("Too Much Glare");
           setNewRequest(true);
         })
         .catch((err) => console.log({ err }))
@@ -56,7 +56,7 @@ const TakePicture = ({
     if (canvasRef.current) {
       var context = canvasRef.current.getContext("2d");
       if (context && videoRef.current) {
-        context.drawImage(videoRef.current, 0, 0, 400, 225);
+        context.drawImage(videoRef.current, 0, 0, 284.4, 160);
         const img = canvasRef.current.toDataURL("image/png");
         submitImage(img);
       }
@@ -113,8 +113,8 @@ const TakePicture = ({
         <video
           ref={videoRef}
           style={{ backgroundColor: "grey" }}
-          width="400"
-          height="225"
+          width="284.4"
+          height="160"
         >
           Video stream not available.
         </video>
@@ -124,8 +124,8 @@ const TakePicture = ({
       <div className="output">
         <canvas
           ref={canvasRef}
-          width="400"
-          height="225"
+          width="284.4"
+          height="160"
           style={{ display: "none" }}
         ></canvas>
 
@@ -137,8 +137,8 @@ const TakePicture = ({
                   ref={imgRef}
                   src={picture}
                   alt="output"
-                  width="400"
-                  height="225"
+                  width="284.4"
+                  height="160"
                 />
                 <p>{outcome}</p>
               </>
