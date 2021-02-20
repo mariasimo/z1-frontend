@@ -1,9 +1,16 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
-const TakePicture = () => {
+const TakePicture = ({
+  picture,
+  setPicture,
+}: {
+  picture: string | undefined;
+  setPicture: any;
+}) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
+  const [outcome, setOutcome] = useState<string | undefined>();
 
   const manageCamera = useCallback(() => {
     const constrains: {
@@ -32,29 +39,29 @@ const TakePicture = () => {
   const takeImage: (video: any) => void = (video) => {
     if (canvasRef.current) {
       var context = canvasRef.current.getContext("2d");
-      console.log("hola", videoRef.current);
       if (context && videoRef.current) {
         context.drawImage(videoRef.current, 0, 0, 400, 225);
-        var data = canvasRef.current.toDataURL("image/png");
-        console.log({ data });
-        if (imgRef.current) {
-          imgRef.current.src = data;
-        }
+        const img = canvasRef.current.toDataURL("image/png");
+        submitImage(img);
       }
     }
   };
 
-  const submitImage: (img: MediaStream | undefined) => void = (img) => {
+  const submitImage: (img: string | undefined) => void = (img) => {
     return fetch("https://front-exercise.z1.digital/evaluations", {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({ img: "" }),
     })
       .then((result) => result.json())
-      .then((result) => console.log(result));
+      .then(({ summary: { outcome } }) => {
+        setPicture(img);
+        setOutcome(outcome);
+      })
+      .catch((err) => console.log({ err }));
   };
 
   useEffect(() => {
@@ -62,7 +69,7 @@ const TakePicture = () => {
   }, [manageCamera]);
 
   return (
-    <div className="App">
+    <div className="take-picture">
       Smile!
       <div className="camera">
         <video ref={videoRef} width="400">
@@ -76,8 +83,20 @@ const TakePicture = () => {
           height="225"
           style={{ display: "none" }}
         ></canvas>
-        <img ref={imgRef} alt="output" width="400" height="225" />
+        {outcome && (
+          <>
+            <img
+              ref={imgRef}
+              src={picture}
+              alt="output"
+              width="400"
+              height="225"
+            />
+            <p>{outcome}</p>
+          </>
+        )}
       </div>
+      <button>Cancel</button>
     </div>
   );
 };
