@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Link, Route } from "wouter";
-import { Header, Logo, Container } from "./styles/components";
-import Scan from "./Scan";
+import React, { useEffect, useRef, useState } from "react";
+import { Route } from "wouter";
 import Camera from "./Camera";
+import Scan from "./Scan";
 
 const App = () => {
   const [picture, setPicture] = useState<string | undefined>();
@@ -17,13 +16,6 @@ const App = () => {
 
   return (
     <body>
-      {/* <Header>
-        <Container>
-          <Logo>
-            <Link to="/">BankClient</Link>
-          </Logo>
-        </Container>
-      </Header> */}
       <Route path="/take-picture">
         <Camera
           picture={picture}

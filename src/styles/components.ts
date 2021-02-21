@@ -255,6 +255,7 @@ export const ContentsLayout = styled.section`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  text-align: center;
 `;
 
 export const Loading = styled.img`

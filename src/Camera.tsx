@@ -66,10 +66,15 @@ const Camera = ({
         })
         .finally(() => {
           setLoading(false);
+          turnOff(videoRef.current?.srcObject as MediaStream);
         });
     },
     [setPicture, setOutcome]
   );
+
+  const turnOff: (video: MediaStream) => void = (video) => {
+    video.getTracks().forEach((stream) => stream.stop());
+  };
 
   const takeImage = useCallback(() => {
     if (canvasRef.current) {
@@ -169,10 +174,10 @@ const Camera = ({
             Take a picture. It may take time to validate your personal
             information.
           </Paragraph>
-          {outcome === "Approved" && <BackToHome />}
         </div>
 
         <div className="item">
+          {outcome === "Approved" && <BackToHome />}
           <Button onClick={handleCancel} ghost={true}>
             {newRequest && picture ? "Go back" : "Cancel"}
           </Button>
