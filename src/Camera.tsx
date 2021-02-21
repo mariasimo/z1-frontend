@@ -38,6 +38,7 @@ const Camera = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const { width: windowWidth, height: windowHeight } = useWindowSize();
   const [loading, setLoading] = useState<boolean>(false);
+  const [streamOff, setStreamOff] = useState<boolean>(false);
   const [timeToCancel, readyToTakeImg] = useCountDown(5);
   const [canceled, setCancel] = useState(false);
   const controller = new AbortController();
@@ -64,10 +65,20 @@ const Camera = ({
         })
         .finally(() => {
           setLoading(false);
+          turnoff(videoRef.current?.srcObject as MediaStream);
         });
     },
     [setPicture, setOutcome]
   );
+
+  const turnoff: (video: MediaStream) => void = (video) => {
+    if (video) {
+      video.getTracks().forEach((track) => {
+        track.stop();
+        setStreamOff(true);
+      });
+    }
+  };
 
   const takeImage = useCallback(() => {
     if (canvasRef.current) {
@@ -127,6 +138,7 @@ const Camera = ({
     if (!canceled) {
       controller.abort();
       setCancel(controller.signal.aborted);
+      turnoff(videoRef.current?.srcObject as MediaStream);
     }
     setLocation("/");
   }
@@ -136,6 +148,10 @@ const Camera = ({
     setPicture("");
     manageCamera();
   }, [manageCamera, setOutcome, setPicture]);
+
+  useEffect(() => {
+    console.log(streamOff);
+  }, [streamOff]);
 
   return (
     <CameraContainer className="camera">
@@ -169,7 +185,7 @@ const Camera = ({
             Take a picture. It may take time to validate your personal
             information.
           </Paragraph>
-          {outcome === "Approved" && <BackToHome />}
+          {outcome === "Approved" && streamOff && <BackToHome />}
         </div>
 
         <div className="item">
