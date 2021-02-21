@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import BackToHome from "./BackToHome";
-import useCountDown from "./hooks/useCountDown";
-import useWindowSize from "./hooks/useWindowSize";
-import loader from "./assets/loader.svg";
+import useCountDown from "../hooks/useCountDown";
+import useWindowSize from "../hooks/useWindowSize";
+import loader from "../assets/loader.svg";
 
 import {
   Video,
@@ -18,13 +18,13 @@ import {
   Loading,
   CountDown,
   Button,
-} from "./styles/components";
-import { statusColor, statusIcon } from "./styles/utils";
+} from "../styles/components";
+import { statusColor, statusIcon } from "../styles/utils";
 
 type CameraProps = {
   picture: string | undefined;
-  setPicture: (picture: string) => void;
   outcome: string | undefined;
+  setPicture: (picture: string) => void;
   setOutcome: (outcome: string) => void;
   status: "accepted" | "rejected" | undefined;
 };
@@ -195,7 +195,7 @@ const Camera = ({
         </div>
 
         <div className="item">
-          {outcome === "Approved" && <BackToHome />}
+          {outcome === "Approved" && streamOff && <BackToHome />}
           <Button onClick={handleCancel} ghost={true}>
             {picture ? "Go back" : "Cancel"}
           </Button>

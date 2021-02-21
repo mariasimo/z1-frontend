@@ -49,6 +49,8 @@ Project will run on http://localhost:3000
 
 - Hooks: en la carpeta /hooks hay un custom hook useCount que se usa para gestionar las cuentas atrás en Camera.ts y un useWindowSize para darle la dimensión full-width al video.
 
+- Typescript: Llevo estudiando Typescript en mi tiempo libre desde que tuve la primera entrevista con Bea, pero obviamente tengo mucho trabajo por hacer aún. Estaba aprendiendo aún las bases y no había hecho pruebas sobre React. He tipado cuando he podido lo mejor que he sabido. Me he apoyado en los docs de Typescript, en React TypeScript Cheatsheet https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components y en los docs de Styled Components https://styled-components.com/docs/api#typescript.
+
 🏗
 
 #### Construido con

@@ -1,7 +1,7 @@
 import React from "react";
 import { Redirect } from "wouter";
-import useCountDown from "./hooks/useCountDown";
-import { Paragraph } from "./styles/components";
+import useCountDown from "../hooks/useCountDown";
+import { Paragraph } from "../styles/components";
 
 const BackToHome = () => {
   const [count, ready] = useCountDown(5);

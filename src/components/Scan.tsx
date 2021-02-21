@@ -1,7 +1,13 @@
 import React, { useEffect } from "react";
 import { Link } from "wouter";
 import CardFrame from "./CardFrame";
-import { Container, Header, Logo, Paragraph, Title } from "./styles/components";
+import {
+  Container,
+  Header,
+  Logo,
+  Paragraph,
+  Title,
+} from "../styles/components";
 
 interface ScanProps {
   picture: string | undefined;

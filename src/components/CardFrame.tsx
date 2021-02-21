@@ -6,8 +6,8 @@ import {
   IdBackground,
   LinkAsButton,
   OutcomeTag,
-} from "./styles/components";
-import { statusColor, statusIcon } from "./styles/utils";
+} from "../styles/components";
+import { statusColor, statusIcon } from "../styles/utils";
 
 type CardFrameProps = {
   picture?: string;
