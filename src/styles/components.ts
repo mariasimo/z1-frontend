@@ -33,7 +33,7 @@ export const Logo = styled.p`
   }
 `;
 
-export const Title = styled.h1`
+export const Title = styled.h1<{ color?: string }>`
   color: ${(p) => (p.color ? p.color : "var(--color-text)")};
   font-size: 1.3rem;
   font-weight: 700;
@@ -41,7 +41,7 @@ export const Title = styled.h1`
   text-align: center;
 `;
 
-export const Paragraph = styled.p`
+export const Paragraph = styled.p<{ color?: string }>`
   color: ${(p) => (p.color ? p.color : "var(--color-text)")};
   font-size: 1rem;
   font-weight: 400;
@@ -69,7 +69,7 @@ export const IdBackground = styled(IdBackgroundSvg)`
   z-index: -1;
 `;
 
-export const CardImage = styled.img`
+export const CardImage = styled.img<{ color?: string }>`
   border-radius: var(--border-radius-card-frame);
   border: 2px solid ${(p) => p.color};
   position: absolute;
@@ -105,7 +105,7 @@ export const Button = styled.button<{ ghost: boolean }>`
   border: none;
 `;
 
-export const OutcomeTag = styled.div`
+export const OutcomeTag = styled.div<{ color?: string }>`
   align-items: center;
   background-color: ${(p) => p.color};
   border-radius: var(--spacing-xxs);
@@ -173,7 +173,7 @@ export const Video = styled.video`
   backdrop-filter: blur(10px);
 `;
 
-export const Canvas = styled.canvas`
+export const Canvas = styled.canvas<{ color?: string }>`
   position: absolute;
   z-index: 1;
   top: 50%;
@@ -197,7 +197,7 @@ export const CanvasContainer = styled.div`
   align-items: center;
 `;
 
-export const Alert = styled.p`
+export const Alert = styled.p<{ color?: string }>`
   position: absolute;
   width: 100%;
   text-align: center;
@@ -229,13 +229,6 @@ export const CountDown = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  img {
-    border: 2px solid ${(p) => p.color};
-    border-radius: 50%;
-    width: 1rem;
-    margin-right: var(--spacing-xs);
-  }
 `;
 
 export const ContentsLayout = styled.section`

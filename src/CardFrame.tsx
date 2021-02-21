@@ -9,13 +9,12 @@ import {
 } from "./styles/components";
 import { statusColor, statusIcon } from "./styles/utils";
 
-const CardFrame = ({
-  picture,
-  status,
-}: {
-  picture: string | undefined;
-  status: "accepted" | "rejected" | undefined;
-}) => {
+type CardFrameProps = {
+  picture?: string;
+  status?: "accepted" | "rejected";
+};
+
+const CardFrame = ({ picture, status }: CardFrameProps) => {
   return (
     <CardContainer>
       {picture ? (

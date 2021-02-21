@@ -21,33 +21,38 @@ import {
 } from "./styles/components";
 import { statusColor, statusIcon } from "./styles/utils";
 
+type CameraProps = {
+  picture: string | undefined;
+  setPicture: (picture: string) => void;
+  outcome: string | undefined;
+  setOutcome: (outcome: string) => void;
+  status: "accepted" | "rejected" | undefined;
+};
+
 const Camera = ({
   picture,
   setPicture,
   outcome,
   setOutcome,
   status,
-}: {
-  picture: string | undefined;
-  setPicture: any;
-  outcome: string | undefined;
-  setOutcome: any;
-  status: "accepted" | "rejected" | undefined;
-}) => {
+}: CameraProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const { width: windowWidth, height: windowHeight } = useWindowSize();
   const [loading, setLoading] = useState<boolean>(false);
   const [streamOff, setStreamOff] = useState<boolean>(false);
   const [timeToCancel, readyToTakeImg] = useCountDown(5);
   const [canceled, setCancel] = useState(false);
   const controller = new AbortController();
   const [, setLocation] = useLocation();
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
   const endpoint = "https://front-exercise.z1.digital/evaluations";
 
-  const submitImage: (img: string | undefined) => void = useCallback(
-    (img) => {
-      return fetch(endpoint, {
+  const submitImage: (
+    img: string | undefined,
+    endpoint: string
+  ) => void = useCallback(
+    (img, endpoint) => {
+      fetch(endpoint, {
         signal: controller.signal,
         method: "POST",
         headers: {
@@ -61,14 +66,12 @@ const Camera = ({
           setOutcome(outcome);
         })
         .catch((err) => {
-          setOutcome(err.message);
-        })
-        .finally(() => {
-          setLoading(false);
-          turnoff(videoRef.current?.srcObject as MediaStream);
+          if (err.message) {
+            setOutcome(err.message);
+          }
         });
     },
-    [setPicture, setOutcome]
+    [setOutcome]
   );
 
   const turnoff: (video: MediaStream) => void = (video) => {
@@ -99,7 +102,7 @@ const Camera = ({
 
         const img = canvasRef.current.toDataURL("image/png");
         setPicture(img);
-        submitImage(img);
+        submitImage(img, endpoint);
       }
     }
   }, [submitImage, setPicture]);
@@ -130,18 +133,20 @@ const Camera = ({
       }
     }
     function errorCallback(err: MediaStreamError): void {
-      setOutcome(err.message);
+      if (err.message) {
+        setOutcome(err.message);
+      }
     }
   }, [readyToTakeImg, takeImage, canceled, videoRef, setOutcome]);
 
-  function handleCancel() {
+  const handleCancel = () => {
     if (!canceled) {
       controller.abort();
       setCancel(controller.signal.aborted);
       turnoff(videoRef.current?.srcObject as MediaStream);
     }
     setLocation("/");
-  }
+  };
 
   useEffect(() => {
     setOutcome("");
@@ -150,8 +155,11 @@ const Camera = ({
   }, [manageCamera, setOutcome, setPicture]);
 
   useEffect(() => {
-    console.log(streamOff);
-  }, [streamOff]);
+    if (outcome) {
+      setLoading(false);
+      turnoff(videoRef.current?.srcObject as MediaStream);
+    }
+  }, [outcome]);
 
   return (
     <CameraContainer className="camera">
@@ -162,7 +170,6 @@ const Camera = ({
       <CanvasContainer>
         <Canvas
           ref={canvasRef}
-          onClick={takeImage}
           color={status ? statusColor[status] : undefined}
         />
         {loading && <Loading src={loader} />}
@@ -185,7 +192,6 @@ const Camera = ({
             Take a picture. It may take time to validate your personal
             information.
           </Paragraph>
-          {outcome === "Approved" && streamOff && <BackToHome />}
         </div>
 
         <div className="item">

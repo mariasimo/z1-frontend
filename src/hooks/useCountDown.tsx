@@ -13,7 +13,7 @@ const useCountDown = (number: number) => {
     }
   }, [count]);
 
-  return [count, count === 0];
+  return [count, count === 0] as const;
 };
 
 export default useCountDown;

@@ -3,8 +3,13 @@
 
 import { useState, useEffect } from "react";
 
+interface WindowSize {
+  width: number;
+  height: number;
+}
+
 const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
+  const [windowSize, setWindowSize] = useState<WindowSize>({
     width: window.innerWidth,
     height: window.innerHeight,
   });

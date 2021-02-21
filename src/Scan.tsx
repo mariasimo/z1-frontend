@@ -3,17 +3,14 @@ import { Link } from "wouter";
 import CardFrame from "./CardFrame";
 import { Container, Header, Logo, Paragraph, Title } from "./styles/components";
 
-const Scan = ({
-  picture,
-  setPicture,
-  setOutcome,
-  status,
-}: {
+interface ScanProps {
   picture: string | undefined;
-  setPicture: any;
-  setOutcome: any;
+  setPicture: (picture: string) => void;
+  setOutcome: (outcome: string) => void;
   status: "accepted" | "rejected" | undefined;
-}) => {
+}
+
+const Scan = ({ picture, setPicture, setOutcome, status }: ScanProps) => {
   useEffect(() => {
     const storedState = localStorage.getItem("currentState");
     if (storedState) {
