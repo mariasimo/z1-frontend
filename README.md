@@ -49,7 +49,9 @@ Project will run on http://localhost:3000
 
 - **Hooks**: en la carpeta /hooks hay un custom hook `useCountDown` que se usa para gestionar las cuentas atrás en Camera.ts y un `useWindowSize` para darle la dimensión full-width al video.
 
-- Typescript: Llevo estudiando Typescript en mi tiempo libre desde que tuve la primera entrevista con Bea, pero obviamente tengo mucho trabajo por hacer aún. Estaba aprendiendo aún las bases y no había hecho pruebas sobre React. He tipado cuando he podido lo mejor que he sabido. Me he apoyado en los docs de Typescript, en React TypeScript Cheatsheet https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components y en los docs de Styled Components https://styled-components.com/docs/api#typescript.
+- **Typescript**: Llevo estudiando Typescript en mi tiempo libre desde que tuve la primera entrevista con Bea, pero obviamente tengo mucho trabajo por hacer aún. Estaba aprendiendo aún las bases y no había hecho pruebas sobre React. He tipado cuanto he podido lo mejor que he sabido. Me he apoyado en los docs de Typescript, en React TypeScript Cheatsheet https://react-typescript-cheatsheet.netlify.app/docs/basic/getting-started/function_components y en los docs de Styled Components https://styled-components.com/docs/api#typescript.
+
+- **Tests**: He omitido los tests, sintiéndolo mucho 😔. He estado viendo documentación para hacerlos pero creo que no tiene sentido añadir a última hora algo que va a ser el resultado de un par de horas de lectura. En mi empresa no hacemos tests y ese es el tipo de razón por la que estoy buscando un cambio.
 
 🏗
 
@@ -64,7 +66,5 @@ Project will run on http://localhost:3000
 💌
 
 #### Gracias por vuestro tiempo!
+
 ¡Hola! Espero que estas notas os sean útiles para leer el ejercicio. Si hay algo que no está muy claro, preguntadme e intentaré clarificaroslo. El ejercicio me ha servido para aprender y enfrentarme a apis que no conocía, y me quedo con ganas de dedicarle algo más de tiempo. Me encantaría recibir vuestro feedback!
-
-
-
