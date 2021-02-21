@@ -1,6 +1,7 @@
 import React from "react";
 import { Redirect } from "wouter";
 import useCountDown from "./hooks/useCountDown";
+import { Paragraph } from "./styles/components";
 
 const BackToHome = () => {
   const [count, ready] = useCountDown(5);
@@ -8,7 +9,9 @@ const BackToHome = () => {
   return ready ? (
     <Redirect to="/" />
   ) : (
-    <p>Please wait while we redirect you {count}</p>
+    <Paragraph color={"var(--color-text-inverse)"}>
+      Please wait while we redirect you in... {count}
+    </Paragraph>
   );
 };
 

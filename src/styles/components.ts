@@ -91,6 +91,20 @@ export const LinkAsButton = styled(Link)`
   text-transform: uppercase;
 `;
 
+export const Button = styled.button<{ ghost: boolean }>`
+  background-color: ${(p) =>
+    !p.ghost ? "var(--color-primary)" : "transparent"};
+  border-radius: 1.5em;
+  color: var(--color-text-inverse);
+  font-weight: 700;
+  min-width: 10rem;
+  padding: 0.77rem 1.2rem 0.73rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  border: none;
+`;
+
 export const OutcomeTag = styled.div`
   align-items: center;
   background-color: ${(p) => p.color};
@@ -167,9 +181,10 @@ export const Canvas = styled.canvas`
   transform: translate(-50%, -50%);
   height: var(--height-card-frame);
   width: var(--width-card-frame);
+  outline: ${(p) => (p.color ? `2px solid ${p.color}` : "none")};
 `;
 
-export const CanvasFeedbackOverlay = styled.div`
+export const CanvasContainer = styled.div`
   position: absolute;
   z-index: 1;
   top: 50%;
@@ -177,11 +192,53 @@ export const CanvasFeedbackOverlay = styled.div`
   transform: translate(-50%, -50%);
   height: var(--height-card-frame);
   width: var(--width-card-frame);
-  border: 2px solid ${(p) => p.color};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Alert = styled.p`
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  bottom: -2.5rem;
+  color: var(--color-text-inverse);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    border: 2px solid ${(p) => p.color};
+    border-radius: 50%;
+    width: 1rem;
+    margin-right: var(--spacing-xs);
+  }
+`;
+
+export const CountDown = styled.p`
+  position: absolute;
+  text-align: center;
+  font-size: 3.2rem;
+  font-weight: 700;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: var(--height-card-frame);
+  width: var(--width-card-frame);
+  color: var(--color-text-inverse);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    border: 2px solid ${(p) => p.color};
+    border-radius: 50%;
+    width: 1rem;
+    margin-right: var(--spacing-xs);
+  }
 `;
 
 export const ContentsLayout = styled.section`
-  position: absolute;
   z-index: 1;
   position: absolute;
   top: 10rem;
@@ -198,4 +255,9 @@ export const ContentsLayout = styled.section`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+`;
+
+export const Loading = styled.img`
+  z-index: 1;
+  position: absolute;
 `;

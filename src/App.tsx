@@ -10,8 +10,10 @@ const App = () => {
   const [status, setStatus] = useState<"accepted" | "rejected" | undefined>();
 
   useEffect(() => {
-    setStatus(outcome === "Approved" ? "accepted" : "rejected");
-  }, []);
+    setStatus(
+      outcome ? (outcome === "Approved" ? "accepted" : "rejected") : undefined
+    );
+  }, [outcome]);
 
   return (
     <body>
