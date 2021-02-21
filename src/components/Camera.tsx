@@ -78,6 +78,7 @@ const Camera = ({
     if (video) {
       video.getTracks().forEach((track) => {
         track.stop();
+        console.log("turnoff");
         setStreamOff(true);
       });
     }

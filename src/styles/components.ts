@@ -229,6 +229,7 @@ export const CountDown = styled.p`
   display: flex;
   justify-content: center;
   align-items: center;
+  text-shadow: 0 0.05em 0.15em rgba(var(--color-secondary-rgb), 0.45);
 `;
 
 export const ContentsLayout = styled.section`
