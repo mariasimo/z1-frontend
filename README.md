@@ -25,7 +25,7 @@ Project will run on http://localhost:3000
 
 #### Notas
 
-- **Flujo de la app**: En Camera.ts la primera función que se lanza es la que gestiona el acceso a la webcam (`manageCamera`). Cuando el video está listo (lo comprobamos con el evento `canplay`), invoca la función `takeImage`, que usa un canvas para captura una imagen y la guarda en el estado. Esta función llama por último a `submitImage` que hace el request al endpoint y gestiona la respuesta.
+- **Flujo de la app**: En Camera.ts la primera función que se lanza es la que gestiona el acceso a la webcam (`manageCamera`). Cuando el video está listo (lo comprobamos con el evento `canplay`), invoca la función `takeImage`, que usa un canvas para capturar una imagen que guarda en el estado. Esta función llama por último a `submitImage` que hace el request al endpoint y gestiona la respuesta.
 
 - **Feedback al usuario**: como todo ocurre de manera automática en cuanto entramos a `/take-picture`, he introducido algunas cosas para que el usuario entienda lo que está pasando. Nada más acceder el usuario tiene 5 segundos para cancelar la operación. Si lo hace, se abortará el request, no se modificará el espacio, y volverá a la ruta principal `/`. Si continua, la imagen se toma y aparece un loader hasta que tenemos una respuesta del servidor. Si es positiva, aparece otra cuenta atrás para que el usuario pueda ver los mensajes de que la imagen es válida antes de la redirección.
 
@@ -62,7 +62,7 @@ Project will run on http://localhost:3000
 💌
 
 #### Gracias por vuestro tiempo!
-¡Hola! Espero que estas notas os sean útiles para leer el ejercicio. Si hay algo que no está muy claro, preguntadme e intentaré clarificaroslo. El ejercicio me ha servido para aprender y enfrentarme a apis que no conocía, y me quedo con ganas de dedicarle algo más de tiempo. Me encantará recibir vuestro feedback!
+¡Hola! Espero que estas notas os sean útiles para leer el ejercicio. Si hay algo que no está muy claro, preguntadme e intentaré clarificaroslo. El ejercicio me ha servido para aprender y enfrentarme a apis que no conocía, y me quedo con ganas de dedicarle algo más de tiempo. Me encantaría recibir vuestro feedback!
 
 
 
