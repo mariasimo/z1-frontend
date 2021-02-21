@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Route } from "wouter";
-import { Header, Logo, Container } from "./styles/components";
+import { Route } from "wouter";
 import Scan from "./Scan";
 import Camera from "./Camera";
 
@@ -15,26 +14,33 @@ const App = () => {
     );
   }, [outcome]);
 
+  useEffect(() => {
+    if (picture && outcome && status) {
+      localStorage.setItem(
+        "currentState",
+        JSON.stringify({ picture, outcome, status })
+      );
+    }
+  }, [picture, outcome, status]);
+
   return (
     <body>
-      {/* <Header>
-        <Container>
-          <Logo>
-            <Link to="/">BankClient</Link>
-          </Logo>
-        </Container>
-      </Header> */}
       <Route path="/take-picture">
         <Camera
           picture={picture}
           setPicture={setPicture}
-          outcome={outcome}
           setOutcome={setOutcome}
+          outcome={outcome}
           status={status}
         />
       </Route>
       <Route path="/">
-        <Scan picture={picture} status={status} />
+        <Scan
+          picture={picture}
+          status={status}
+          setPicture={setPicture}
+          setOutcome={setOutcome}
+        />
       </Route>
     </body>
   );

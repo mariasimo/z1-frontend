@@ -37,7 +37,6 @@ const Camera = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { width: windowWidth, height: windowHeight } = useWindowSize();
-  const [newRequest, setNewRequest] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [timeToCancel, readyToTakeImg] = useCountDown(5);
   const [canceled, setCancel] = useState(false);
@@ -59,7 +58,6 @@ const Camera = ({
         .then((response) => response.json())
         .then(({ summary: { outcome } }) => {
           setOutcome(outcome);
-          setNewRequest(true);
         })
         .catch((err) => {
           setOutcome(err.message);
@@ -134,8 +132,10 @@ const Camera = ({
   }
 
   useEffect(() => {
+    setOutcome("");
+    setPicture("");
     manageCamera();
-  }, [manageCamera]);
+  }, [manageCamera, setOutcome, setPicture]);
 
   return (
     <CameraContainer className="camera">
@@ -147,11 +147,11 @@ const Camera = ({
         <Canvas
           ref={canvasRef}
           onClick={takeImage}
-          color={newRequest && status ? statusColor[status] : undefined}
+          color={status ? statusColor[status] : undefined}
         />
         {loading && <Loading src={loader} />}
 
-        {newRequest && outcome && (
+        {outcome && (
           <Alert color={status && statusColor[status]}>
             {status && <img src={statusIcon[status]} alt="Status Icon" />}
             {outcome === "Approved" ? "Picture taken" : outcome}
@@ -174,7 +174,7 @@ const Camera = ({
 
         <div className="item">
           <Button onClick={handleCancel} ghost={true}>
-            {newRequest && picture ? "Go back" : "Cancel"}
+            {picture ? "Go back" : "Cancel"}
           </Button>
         </div>
       </ContentsLayout>
