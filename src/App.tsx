@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Route } from "wouter";
 import Camera from "./Camera";
 import Scan from "./Scan";
@@ -14,19 +14,33 @@ const App = () => {
     );
   }, [outcome]);
 
+  useEffect(() => {
+    if (picture && outcome && status) {
+      localStorage.setItem(
+        "currentState",
+        JSON.stringify({ picture, outcome, status })
+      );
+    }
+  }, [picture, outcome, status]);
+
   return (
     <body>
       <Route path="/take-picture">
         <Camera
           picture={picture}
           setPicture={setPicture}
-          outcome={outcome}
           setOutcome={setOutcome}
+          outcome={outcome}
           status={status}
         />
       </Route>
       <Route path="/">
-        <Scan picture={picture} status={status} />
+        <Scan
+          picture={picture}
+          status={status}
+          setPicture={setPicture}
+          setOutcome={setOutcome}
+        />
       </Route>
     </body>
   );

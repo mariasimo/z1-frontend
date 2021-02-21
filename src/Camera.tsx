@@ -37,8 +37,8 @@ const Camera = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const { width: windowWidth, height: windowHeight } = useWindowSize();
-  const [newRequest, setNewRequest] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [streamOff, setStreamOff] = useState<boolean>(false);
   const [timeToCancel, readyToTakeImg] = useCountDown(5);
   const [canceled, setCancel] = useState(false);
   const controller = new AbortController();
@@ -59,21 +59,25 @@ const Camera = ({
         .then((response) => response.json())
         .then(({ summary: { outcome } }) => {
           setOutcome(outcome);
-          setNewRequest(true);
         })
         .catch((err) => {
           setOutcome(err.message);
         })
         .finally(() => {
           setLoading(false);
-          turnOff(videoRef.current?.srcObject as MediaStream);
+          turnoff(videoRef.current?.srcObject as MediaStream);
         });
     },
     [setPicture, setOutcome]
   );
 
-  const turnOff: (video: MediaStream) => void = (video) => {
-    video.getTracks().forEach((stream) => stream.stop());
+  const turnoff: (video: MediaStream) => void = (video) => {
+    if (video) {
+      video.getTracks().forEach((track) => {
+        track.stop();
+        setStreamOff(true);
+      });
+    }
   };
 
   const takeImage = useCallback(() => {
@@ -134,13 +138,20 @@ const Camera = ({
     if (!canceled) {
       controller.abort();
       setCancel(controller.signal.aborted);
+      turnoff(videoRef.current?.srcObject as MediaStream);
     }
     setLocation("/");
   }
 
   useEffect(() => {
+    setOutcome("");
+    setPicture("");
     manageCamera();
-  }, [manageCamera]);
+  }, [manageCamera, setOutcome, setPicture]);
+
+  useEffect(() => {
+    console.log(streamOff);
+  }, [streamOff]);
 
   return (
     <CameraContainer className="camera">
@@ -152,11 +163,11 @@ const Camera = ({
         <Canvas
           ref={canvasRef}
           onClick={takeImage}
-          color={newRequest && status ? statusColor[status] : undefined}
+          color={status ? statusColor[status] : undefined}
         />
         {loading && <Loading src={loader} />}
 
-        {newRequest && outcome && (
+        {outcome && (
           <Alert color={status && statusColor[status]}>
             {status && <img src={statusIcon[status]} alt="Status Icon" />}
             {outcome === "Approved" ? "Picture taken" : outcome}
@@ -174,12 +185,13 @@ const Camera = ({
             Take a picture. It may take time to validate your personal
             information.
           </Paragraph>
+          {outcome === "Approved" && streamOff && <BackToHome />}
         </div>
 
         <div className="item">
           {outcome === "Approved" && <BackToHome />}
           <Button onClick={handleCancel} ghost={true}>
-            {newRequest && picture ? "Go back" : "Cancel"}
+            {picture ? "Go back" : "Cancel"}
           </Button>
         </div>
       </ContentsLayout>

@@ -1,46 +1,64 @@
-# Getting Started with Create React App
+# Z1 FrontEnd
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Bootstrap con [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Flujo de la aplicación:
 
-In the project directory, you can run:
+- Pulsando "take picture" se abre la cámara.
+- La cámara hará fotos automáticamente en segundo plano y las enviará al backend.
+- En la interfaz mostraremos en rojo si el backend devuelve que no es válida.
+- En la interfaz mostraremos en verde si el backend devuelve que es válida y automáticamente pasaremos al usuario a la pantalla principal.
+- En cualquier momento que el usuario vaya a la pantalla principal, ya sea porque pulse cancelar o porque se toma la foto correctamente, debemos mostrar la última foto que se haya tomado y el estado que haya devuelto el backend sobre ella.
 
-### `yarn start`
+🚀
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#### Instalar e iniciar
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```
+yarn install
+yarn start
+```
 
-### `yarn test`
+Project will run on http://localhost:3000
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+📝
 
-### `yarn build`
+#### Notas
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Flujo de la app: En Camera.ts la primera función que se lanza es la que gestiona el acceso a la webcam (manageCamera). Cuando el video está listo (lo comprobamos con el evento "canplay"), invoca la función "takeImage", que usa un canvas para captura una imagen y la guarda en el estado. Esta función llama por último a "submitImage" que hace el request al endpoint y gestiona la respuesta.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Feedback al usuario: como todo ocurre de manera automática en cuanto entramos a /take-picture, he introducido algunas cosas para que el usuario entienda lo que está pasando. Nada más acceder el usuario tiene 5 segundos para cancelar la operación. Si lo hace, se abortará el request, no se modificará el espacio, y volverá a la ruta principal /. Si continua, la imagen se toma y aparece un loader hasta que tenemos una respuesta del servidor. Si es positiva, aparece otra cuenta atrás para que el usuario pueda ver los mensajes de que la imagen es válida antes de la redirección.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Redirección: según las indicaciones, cuando la respuesta del servidor es positiva, se redigire al usuario al inicio. Cuando no es negativa no, el usuario permanece en /take-picture. Para dar al usuario una salida de vuelta al inicio, el botón de cancelar cambia su literal por "Go back" una vez que se ha tomado la foto y ya la opción de cancelar no es posible.
 
-### `yarn eject`
+- LocalStorage: En /take-picture el estado se limpia cada vezen el renderizado inicial, para preparar el componente para hacer una nueva imagen, enviarla al servidor y dar feedback al usuario. Aunque, tenemos la necesidad de conservarlos, porque el usuario tiene que tener siempre disponibles los ultimos resultados en el inicio. Por eso, los resultados se conservan en el localStorage.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Apagado de cámara: Cuando se termina o se cancela la petición al servidor, la cámara se apaga.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- Error de conexión: Cuando no hay internet, el mensaje de error ("Failed to fetch") se captura en "outcomes" y se presenta como se presentaria la respuesta del servidor
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+- Wouter: he usado Wouter como alternativa más ligera a React Router https://github.com/molefrog/wouter
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- Custom properties: en los global-styles están las variables ui principales del sistema
 
-## Learn More
+- Styled Components: todos los estilos están agrupados en styles/components y se importan en los archivos donde son usados
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Clip-path: en /take-picture he usado un div como overlay por encima de la etiqueta de video. Este div tiene un filtro para darle a la imagen el aspecto indicado en la vista. Además tiene una propiedad de clip-path que usa custom properties para crear el frame de la imagen. Podría haber usado un svg para el clip-path y así tener las esquinas redondeadas como en la vista, pero me gustaba la idea de poder tener una solución con unidades relativas y custom properties.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Recorte de la imagen: En takeImage se usa drawImage para gestionar el recorte del video al espacio del canvas, con las dimensiones que necesita la imagen. Hay algún desvió en los números (quizás relacionado con la diferencia de aspect ratio entre el video en fullwidth y el canvas en 16:9?) que hace que el recorte no sea perfecto, pero se aproxima lo suficiente.
+
+- Hooks: en la carpeta /hooks hay un custom hook useCount que se usa para gestionar las cuentas atrás en Camera.ts y un useWindowSize para darle la dimensión full-width al video.
+
+🏗
+
+#### Construido con
+
+- React
+- React DOM
+- Typescript
+- Styled components
+- Wouter
+
+💌
+
+#### Gracias por vuestro tiempo!
