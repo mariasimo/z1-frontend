@@ -47,7 +47,7 @@ Project will run on http://localhost:3000
 
 - **Recorte de la imagen**: En la function `takeImage` se usa drawImage() para gestionar el recorte del video al espacio del canvas, con las dimensiones que necesita la imagen. Hay algún desvio en los números que no he sabido solucionar en el tiempo que tenía (quizás relacionado con la diferencia de aspect ratio entre el video en fullwidth y el canvas en 16:9?) que hace que el recorte no sea perfecto, pero creo se aproxima lo suficiente
 
-- **Hooks**: en la carpeta /hooks hay un custom hook `useCount` que se usa para gestionar las cuentas atrás en Camera.ts y un `useWindowSize` para darle la dimensión full-width al video.
+- **Hooks**: en la carpeta /hooks hay un custom hook `useCountDown` que se usa para gestionar las cuentas atrás en Camera.ts y un `useWindowSize` para darle la dimensión full-width al video.
 
 🏗
 
