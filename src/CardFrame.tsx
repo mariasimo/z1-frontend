@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import check from "./assets/check.svg";
-import error from "./assets/error.svg";
+import React from "react";
+
 import {
   CardContainer,
   CardImage,
@@ -8,44 +7,29 @@ import {
   LinkAsButton,
   OutcomeTag,
 } from "./styles/components";
+import { statusColor, statusIcon } from "./styles/utils";
 
 const CardFrame = ({
   picture,
-  outcome,
+  status,
 }: {
   picture: string | undefined;
-  outcome: string | undefined;
+  status: "accepted" | "rejected" | undefined;
 }) => {
-  const showImage = outcome && picture;
-  const [status, setStatus] = useState<"accepted" | "rejected" | undefined>();
-
-  const icon = {
-    accepted: check,
-    rejected: error,
-  };
-
-  const color = {
-    accepted: `var(--color-status-success)`,
-    rejected: `var(--color-status-error)`,
-  };
-
-  useEffect(() => {
-    setStatus(outcome === "Approved" ? "accepted" : "rejected");
-  }, []);
-
   return (
     <CardContainer>
-      {showImage ? (
+      {picture ? (
         <>
           <CardImage
             src={picture}
-            color={status && color[status]}
+            color={status && statusColor[status]}
             alt="output"
           />
-          <LinkAsButton to="/take-picture">Retake Picture</LinkAsButton>
-
-          <OutcomeTag color={status && color[status]}>
-            <img src={status && icon[status]} alt="Status Icon" />
+          {status === "rejected" && (
+            <LinkAsButton to="/take-picture">Retake Picture</LinkAsButton>
+          )}
+          <OutcomeTag color={status && statusColor[status]}>
+            <img src={status && statusIcon[status]} alt="Status Icon" />
             {status}
           </OutcomeTag>
         </>

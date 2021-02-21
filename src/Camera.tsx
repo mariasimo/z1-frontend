@@ -3,31 +3,40 @@ import { useLocation } from "wouter";
 import BackToHome from "./BackToHome";
 import useCountDown from "./hooks/useCountDown";
 import useWindowSize from "./hooks/useWindowSize";
-import { VideoContainer } from "./styles/components";
+import {
+  Video,
+  Container,
+  Title,
+  Paragraph,
+  CameraContainer,
+  ContentsLayout,
+  Canvas,
+  CanvasFeedbackOverlay,
+  Blur,
+} from "./styles/components";
+import { statusColor } from "./styles/utils";
 
 const Camera = ({
   picture,
   setPicture,
   outcome,
   setOutcome,
+  status,
 }: {
   picture: string | undefined;
   setPicture: any;
   outcome: string | undefined;
   setOutcome: any;
+  status: "accepted" | "rejected" | undefined;
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const {
-    width: windowWidth,
-    height: windowHeight,
-    dpi: windowDpi,
-  } = useWindowSize();
+  const { width: windowWidth, height: windowHeight } = useWindowSize();
 
   const [newRequest, setNewRequest] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [timeToCancel, readyToTakeImg] = useCountDown(1);
+  const [timeToCancel, readyToTakeImg] = useCountDown(5);
   const [cancel, setCancel] = useState(false);
   const controller = new AbortController();
   const [, setLocation] = useLocation();
@@ -35,23 +44,27 @@ const Camera = ({
 
   const submitImage: (img: string | undefined) => void = useCallback(
     (img) => {
-      return fetch(endpoint, {
-        signal: controller.signal,
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ img: "" }),
-      })
-        .then((response) => response.json())
-        .then(({ summary: { outcome } }) => {
-          setPicture(img);
-          setOutcome("Too Much Glare");
-          setNewRequest(true);
-        })
-        .catch((err) => console.log({ err }))
-        .finally(() => setLoading(false));
+      setPicture(img);
+      setOutcome("Too Much Glare");
+      setNewRequest(true);
+
+      //   return fetch(endpoint, {
+      //     signal: controller.signal,
+      //     method: "POST",
+      //     headers: {
+      //       Accept: "application/json",
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({ img: "" }),
+      //   })
+      //     .then((response) => response.json())
+      //     .then(({ summary: { outcome } }) => {
+      //       setPicture(img);
+      //       setOutcome(outcome);
+      //       setNewRequest(true);
+      //     })
+      //     .catch((err) => console.log({ err }))
+      //     .finally(() => setLoading(false));
     },
     [setPicture, setOutcome]
   );
@@ -59,8 +72,20 @@ const Camera = ({
   const takeImage = useCallback(() => {
     if (canvasRef.current) {
       var context = canvasRef.current.getContext("2d");
-      if (context && videoRef.current) {
-        context.drawImage(videoRef.current, 0, 0, 284.4, 160);
+      if (context && videoRef.current && canvasRef.current) {
+        context.drawImage(
+          videoRef.current,
+          canvasRef.current.getBoundingClientRect().x,
+          canvasRef.current.getBoundingClientRect().y,
+          videoRef.current.width,
+          videoRef.current.height,
+          0,
+          0,
+          videoRef.current.width + canvasRef.current.width,
+          videoRef.current.height + canvasRef.current.height
+        );
+        videoRef.current.pause();
+
         const img = canvasRef.current.toDataURL("image/png");
         submitImage(img);
       }
@@ -108,49 +133,34 @@ const Camera = ({
   }, [manageCamera]);
 
   return (
-    <div className="take-picture">
-      <VideoContainer>
-        <video
-          ref={videoRef}
-          style={{
-            backgroundColor: "grey",
-          }}
-          width={windowWidth}
-          height={windowHeight}
-        >
-          Video stream not available.
-        </video>
-      </VideoContainer>
-      {!readyToTakeImg && <p>time for cancel... {timeToCancel}</p>}
-      {loading && <p>Loading...</p>}
-      <div className="output" style={{ position: "absolute" }}>
-        <canvas
-          ref={canvasRef}
-          width="284.4"
-          height="160"
-          style={{ display: "none" }}
-        ></canvas>
+    <CameraContainer className="camera">
+      <Blur />
+      <Video ref={videoRef} width={windowWidth} height={windowHeight}>
+        Cámara no disponible
+      </Video>
+      <Canvas ref={canvasRef} onClick={takeImage} />
+      <CanvasFeedbackOverlay color={status && statusColor[status]} />
+      {outcome && <p>{outcome}</p>}
+      <ContentsLayout>
+        <div className="item">
+          <Title as="h1" color={"var(--color-text-inverse)"}>
+            Scan your id
+          </Title>
+          <Paragraph color={"var(--color-text-inverse)"}>
+            Take a picture. It may take time to validate your personal
+            information.
+          </Paragraph>
+        </div>
 
-        {newRequest && (
-          <div>
-            {outcome && picture && (
-              <>
-                <img
-                  ref={imgRef}
-                  src={picture}
-                  alt="output"
-                  width="284.4"
-                  height="160"
-                />
-                <p>{outcome}</p>
-              </>
-            )}
-            {outcome === "Approved" && <BackToHome />}
-          </div>
-        )}
-      </div>
-      <button onClick={handleCancel}>Cancel</button>
-    </div>
+        <div className="item">
+          {!readyToTakeImg && <p>time for cancel... {timeToCancel}</p>}
+          {loading && <p>Loading...</p>}
+
+          {outcome === "Approved" && <BackToHome />}
+          <button onClick={handleCancel}>Cancel</button>
+        </div>
+      </ContentsLayout>
+    </CameraContainer>
   );
 };
 

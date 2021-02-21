@@ -34,7 +34,7 @@ export const Logo = styled.p`
 `;
 
 export const Title = styled.h1`
-  color: var(--color-text);
+  color: ${(p) => (p.color ? p.color : "var(--color-text)")};
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: var(--spacing-s);
@@ -42,7 +42,7 @@ export const Title = styled.h1`
 `;
 
 export const Paragraph = styled.p`
-  color: var(--color-text);
+  color: ${(p) => (p.color ? p.color : "var(--color-text)")};
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -56,10 +56,10 @@ export const CardContainer = styled.article`
   border-radius: var(--border-radius-card-frame);
   box-shadow: 0 0.75em 1.2em -0.3em rgba(var(--color-secondary-rgb), 0.15);
   display: flex;
-  height: var(--height-card-frame);
   justify-content: center;
   margin: 0 auto;
   position: relative;
+  height: var(--height-card-frame);
   width: var(--width-card-frame);
   z-index: 1;
 `;
@@ -72,10 +72,10 @@ export const IdBackground = styled(IdBackgroundSvg)`
 export const CardImage = styled.img`
   border-radius: var(--border-radius-card-frame);
   border: 2px solid ${(p) => p.color};
-  max-width: 100%;
-  max-height: 100%;
   position: absolute;
   z-index: -1;
+  height: var(--height-card-frame);
+  width: var(--width-card-frame);
 `;
 
 export const LinkAsButton = styled(Link)`
@@ -107,15 +107,95 @@ export const OutcomeTag = styled.div`
   transform: translateY(50%);
 `;
 
-export const VideoContainer = styled.div`
-  box-sizing: border-box;
-  height: 100%;
+export const CameraContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
   overflow: hidden;
-  width: 100%;
-  object-fit: cover;
+`;
 
-  video {
-    height: 100%;
-    object-fit: cover;
-  }
+export const Blur = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: 0 0;
+  backdrop-filter: blur(0.25em) saturate(50%) brightness(50%);
+  clip-path: polygon(
+    0% 0%,
+    0% 100%,
+    calc(50% - calc(var(--width-card-frame) / 2)) 100%,
+    calc(50% - calc(var(--width-card-frame) / 2))
+      calc(50% - calc(var(--height-card-frame) / 2)),
+    calc(50% + calc(var(--width-card-frame) / 2))
+      calc(50% - calc(var(--height-card-frame) / 2)),
+    calc(50% + calc(var(--width-card-frame) / 2))
+      calc(50% + calc(var(--height-card-frame) / 2)),
+    calc(50% - calc(var(--width-card-frame) / 2))
+      calc(50% + calc(var(--height-card-frame) / 2)),
+    calc(50% - calc(var(--width-card-frame) / 2)) 100%,
+    100% 100%,
+    100% 0%
+  );
+`;
+
+export const Video = styled.video`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: 0 0;
+  z-index: -1;
+  backdrop-filter: blur(10px);
+`;
+
+export const Canvas = styled.canvas`
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: var(--height-card-frame);
+  width: var(--width-card-frame);
+`;
+
+export const CanvasFeedbackOverlay = styled.div`
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: var(--height-card-frame);
+  width: var(--width-card-frame);
+  border: 2px solid ${(p) => p.color};
+`;
+
+export const ContentsLayout = styled.section`
+  position: absolute;
+  z-index: 1;
+  position: absolute;
+  top: 10rem;
+  left: 0;
+  right: 0;
+  bottom: 10rem;
+  width: 100vw;
+
+  width: var(--width-container);
+  max-width: var(--max-width-container);
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
 `;

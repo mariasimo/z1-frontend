@@ -7,7 +7,6 @@ const useWindowSize = () => {
   const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
-    dpi: window.devicePixelRatio,
   });
 
   useEffect(() => {
@@ -15,7 +14,6 @@ const useWindowSize = () => {
       setWindowSize({
         width: window.innerWidth,
         height: window.innerHeight,
-        dpi: window.devicePixelRatio,
       });
     };
     window.addEventListener("resize", handleResize);
